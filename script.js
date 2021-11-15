@@ -62,6 +62,34 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 /////////////////////////////////////////////////
+let currentAccount;
+
+btnLogin.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+
+  if (Number(inputLoginPin.value) === currentAccount?.pin) {
+    containerApp.style.opacity = "100";
+    labelWelcome.textContent = `Welcome back ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+    displayMovements(currentAccount.movements);
+    calcDisplayBalance(currentAccount.movements);
+    calcDisplaySummary(currentAccount.movements);
+
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginUsername.blur();
+    inputLoginPin.blur();
+  } else {
+    containerApp.style.opacity = "0";
+    labelWelcome.textContent = `Log in to get started`;
+  }
+});
+
+/////////////////////////////////////////////////
 
 const displayMovements = function (movements) {
   containerMovements.innerHTML = "";
@@ -81,7 +109,6 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
-displayMovements(account1.movements);
 
 /////////////////////////////////////////////////
 
@@ -91,8 +118,6 @@ const calcDisplayBalance = function (movements) {
   }, 0);
   labelBalance.textContent = `${balance}€`;
 };
-
-calcDisplayBalance(account1.movements);
 
 /////////////////////////////////////////////////
 
@@ -107,7 +132,7 @@ const calcDisplaySummary = function (movements) {
 
   const interest = movements
     .filter((mov) => mov > 0)
-    .map((deposit) => deposit * 0.012)
+    .map((deposit) => deposit * (currentAccount.interestRate / 100))
     .filter((int, i) => int >= 1)
     .reduce((acc, int) => acc + int, 0);
 
@@ -115,7 +140,6 @@ const calcDisplaySummary = function (movements) {
   labelSumOut.textContent = `${Math.abs(out)}€`;
   labelSumInterest.textContent = `${interest}€`;
 };
-calcDisplaySummary(account1.movements);
 ///////////////////////////////////////////////
 const createUsername = function (accs) {
   accs.forEach(function (acc) {
