@@ -182,3 +182,22 @@ btnTransfer.addEventListener("click", function (e) {
     inputTransferAmount.blur();
   }
 });
+
+/////////////////////////////////////////////////
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  if (
+    Number(inputClosePin.value) === currentAccount?.pin &&
+    inputCloseUsername.value === currentAccount?.username
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currentAccount.username
+    );
+    accounts.splice(index, 1);
+    containerApp.style.opacity = "0";
+    labelWelcome.textContent = `Log in to get started`;
+  }
+
+  inputCloseUsername.value = inputClosePin.value = "";
+});
