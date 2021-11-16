@@ -96,10 +96,13 @@ const updateUI = function (acc) {
 
 /////////////////////////////////////////////////
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = "";
 
-  movements.forEach(function (mov, i) {
+  //slice creates shallow copy, so as not to mutate original array with the sort method
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const movType = mov > 0 ? "deposit" : "withdrawal";
 
     const html = `
@@ -217,4 +220,13 @@ btnClose.addEventListener("click", function (e) {
   }
 
   inputCloseUsername.value = inputClosePin.value = "";
+});
+
+/////////////////////////////////////////////////
+let sorted = false;
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
